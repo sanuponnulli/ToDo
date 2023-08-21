@@ -80,16 +80,23 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
       buildWhen: (previous, current) => current is! Homeactionstate,
       listenWhen: (previous, current) => current is Homeactionstate,
       listener: (context, state) {
-        log(state.runtimeType.toString());
+        // log(state.runtimeType.toString());
         if (state.runtimeType == HomeNavigateToAddTaskstate) {
-          log("message  AddbuttonClick");
+          // log("message  AddbuttonClick");
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => AddTaskScreen()));
+        } else if (state.runtimeType == HomeOntapTAskState) {
+          final cstate = state as HomeOntapTAskState;
+          // log("message  AddbuttonClick");
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => AddTaskScreen(
+                    task: cstate.task,
+                  )));
         }
         // TODO: implement listener
       },
       builder: (context, state) {
-        log(state.toString());
+        // log(state.toString());
 
         switch (state.runtimeType) {
           case (HomeLoadSuccessState || HomeEmptyState):
@@ -108,23 +115,32 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
                         itemCount:
                             list.length, // Replace with your actual task count
                         itemBuilder: (context, index) {
-                          return Card(
-                            elevation: 3,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: ListTile(
-                              title: Text('Task ${list[index].title}',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                              subtitle: const Text('Due Date: August 31, 2023',
-                                  style: TextStyle(color: Colors.grey)),
-                              trailing: Checkbox(
-                                value:
-                                    false, // Replace with your actual checkbox value
-                                onChanged: (bool? value) {
-                                  // Replace with your checkbox onChanged logic
-                                },
+                          return GestureDetector(
+                            onTap: () {
+                              if (mounted) {
+                                BlocProvider.of<HomeBloc>(context)
+                                    .add(OnTapTask(list[index]));
+                              }
+                            },
+                            child: Card(
+                              elevation: 3,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: ListTile(
+                                title: Text('Task ${list[index].title}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                subtitle: const Text(
+                                    'Due Date: August 31, 2023',
+                                    style: TextStyle(color: Colors.grey)),
+                                trailing: Checkbox(
+                                  value:
+                                      false, // Replace with your actual checkbox value
+                                  onChanged: (bool? value) {
+                                    // Replace with your checkbox onChanged logic
+                                  },
+                                ),
                               ),
                             ),
                           );

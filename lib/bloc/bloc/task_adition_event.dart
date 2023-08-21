@@ -8,3 +8,11 @@ class SubmitNewTaskEvent extends TaskAditionEvent {
 
   SubmitNewTaskEvent(this.task);
 }
+
+class EditTaskEvent extends TaskAditionEvent {
+  final TaskModel task;
+
+  EditTaskEvent(this.task);
+}
+
+class TakAdditionPAgeInitailEvent extends TaskAditionEvent {}

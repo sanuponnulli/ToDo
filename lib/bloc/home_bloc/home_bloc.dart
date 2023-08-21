@@ -16,6 +16,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //   // TODO: implement event handler
     // });
     on<AddbuttonClick>(addbuttonclicked);
+
+    on<OnTapTask>(ontaptask);
   }
 
   FutureOr<void> addbuttonclicked(
@@ -35,5 +37,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(HomeLoadSuccessState(value));
       }
     });
+  }
+
+  FutureOr<void> ontaptask(OnTapTask event, Emitter<HomeState> emit) {
+    emit(HomeOntapTAskState(event.task));
   }
 }

@@ -7,6 +7,12 @@ abstract class Homeactionstate extends HomeState {}
 
 class HomeNavigateToAddTaskstate extends Homeactionstate {}
 
+class HomeOntapTAskState extends Homeactionstate {
+  final TaskModel task;
+
+  HomeOntapTAskState(this.task);
+}
+
 class HomeLoadingState extends HomeState {}
 
 class HomeEmptyState extends HomeState {}

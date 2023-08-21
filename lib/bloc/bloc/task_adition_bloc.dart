@@ -10,7 +10,10 @@ part 'task_adition_state.dart';
 
 class TaskAditionBloc extends Bloc<TaskAditionEvent, TaskAditionState> {
   TaskAditionBloc() : super(TaskAditionInitial()) {
+    on<TakAdditionPAgeInitailEvent>(initialevent);
     on<SubmitNewTaskEvent>(submitnewtask);
+
+    on<EditTaskEvent>(edittask);
   }
 
   FutureOr<void> submitnewtask(
@@ -20,5 +23,18 @@ class TaskAditionBloc extends Bloc<TaskAditionEvent, TaskAditionState> {
     await DatabaseHelper().addtask(event.task).then((value) {
       emit(TAskAdditionSucceessState());
     });
+  }
+
+  FutureOr<void> edittask(
+      EditTaskEvent event, Emitter<TaskAditionState> emit) async {
+    emit(TaskAdditionprocessing());
+
+    await DatabaseHelper().updatetask(event.task).then((value) {
+      emit(TAskAdditionSucceessState());
+    });
+  }
+
+  FutureOr<void> initialevent(event, Emitter<TaskAditionState> emit) {
+    emit(TaskAditionInitial());
   }
 }
