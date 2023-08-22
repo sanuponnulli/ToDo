@@ -18,6 +18,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<AddbuttonClick>(addbuttonclicked);
 
     on<OnTapTask>(ontaptask);
+
+    on<OnCheckboxClicked>(oncheckboxclicked);
+
+    on<OntaskdeleteEvent>(ontaskdelete);
   }
 
   FutureOr<void> addbuttonclicked(
@@ -28,7 +32,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> homeinitialevent(
       HomeInitialEvant event, Emitter<HomeState> emit) async {
-    log("message");
+    log("Home Initial Called");
     emit(HomeLoadingState());
     await DatabaseHelper().fetchall().then((value) {
       if (value == null) {
@@ -41,5 +45,41 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   FutureOr<void> ontaptask(OnTapTask event, Emitter<HomeState> emit) {
     emit(HomeOntapTAskState(event.task));
+  }
+
+  FutureOr<void> oncheckboxclicked(
+      OnCheckboxClicked event, Emitter<HomeState> emit) async {
+    final task = event.task;
+    if (task.id == null) {
+      return;
+    }
+
+    final result = await DatabaseHelper().updatetask(TaskModel(
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed == 0 ? 1 : 0));
+
+    log("DB rESULT${result.toString()}");
+
+    emit(CheckboxClickedState());
+  }
+
+  FutureOr<void> ontaskdelete(
+      OntaskdeleteEvent event, Emitter<HomeState> emit) async {
+    final task = event.task;
+    if (task.id == null) {
+      return;
+    }
+
+    final result = await DatabaseHelper().deletetask(TaskModel(
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        completed: task.completed == 0 ? 1 : 0));
+
+    log("DB rESULT${result.toString()}");
+
+    emit(CheckboxClickedState());
   }
 }

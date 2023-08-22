@@ -7,6 +7,8 @@ abstract class Homeactionstate extends HomeState {}
 
 class HomeNavigateToAddTaskstate extends Homeactionstate {}
 
+class CheckboxClickedState extends Homeactionstate {}
+
 class HomeOntapTAskState extends Homeactionstate {
   final TaskModel task;
 

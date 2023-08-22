@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todo/model/task_model.dart';
@@ -23,6 +25,7 @@ class DatabaseHelper {
   }
 
   Future<Database> _initdatabase() async {
+    log("database creation method called");
     return openDatabase(join(await getDatabasesPath(), dbName), version: 1,
         onCreate: (db, version) async {
       await db.execute('''
@@ -30,7 +33,7 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             description TEXT,
-            isCompleted INTEGER
+            Completed INTEGER
           )
         ''');
     });
@@ -45,8 +48,14 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> cleartable() async {
+    final db = await database;
+    return await db.execute("DROP TABLE tasks");
+  }
+
   Future<int> updatetask(TaskModel task) async {
     final db = await database;
+    // log(task.toJson().toString());
     return db.update(
       "tasks",
       task.toJson(),

@@ -12,3 +12,15 @@ class OnTapTask extends HomeEvent {
 
   OnTapTask(this.task);
 }
+
+class OnCheckboxClicked extends HomeEvent {
+  final TaskModel task;
+
+  OnCheckboxClicked(this.task);
+}
+
+class OntaskdeleteEvent extends HomeEvent {
+  final TaskModel task;
+
+  OntaskdeleteEvent(this.task);
+}

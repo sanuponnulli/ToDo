@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/bloc/bloc/task_adition_bloc.dart';
 import 'package:todo/bloc/home_bloc/home_bloc.dart';
+import 'package:todo/services/databaseservices.dart';
 import 'package:todo/views/addtask.dart';
 
 void main() {
@@ -92,6 +93,8 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
               builder: (context) => AddTaskScreen(
                     task: cstate.task,
                   )));
+        } else if (state.runtimeType == CheckboxClickedState) {
+          BlocProvider.of<HomeBloc>(context).add(HomeInitialEvant());
         }
         // TODO: implement listener
       },
@@ -100,8 +103,17 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
 
         switch (state.runtimeType) {
           case (HomeLoadSuccessState || HomeEmptyState):
+            // final e = state as HomeLoadSuccessState;
+            // log("0 th element completed value ${e.tasklist[0].completed.toString()}");
             return Scaffold(
               appBar: AppBar(
+                actions: [
+                  GestureDetector(
+                      onTap: () {
+                        DatabaseHelper().cleartable();
+                      },
+                      child: Icon(Icons.delete))
+                ],
                 title: const Text('Todo List'),
               ),
               body: state.runtimeType == HomeEmptyState
@@ -122,24 +134,33 @@ class _TodoHomeScreenState extends State<TodoHomeScreen> {
                                     .add(OnTapTask(list[index]));
                               }
                             },
-                            child: Card(
-                              elevation: 3,
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: ListTile(
-                                title: Text('Task ${list[index].title}',
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold)),
-                                subtitle: const Text(
-                                    'Due Date: August 31, 2023',
-                                    style: TextStyle(color: Colors.grey)),
-                                trailing: Checkbox(
-                                  value:
-                                      false, // Replace with your actual checkbox value
-                                  onChanged: (bool? value) {
-                                    // Replace with your checkbox onChanged logic
-                                  },
+                            child: Dismissible(
+                              direction: DismissDirection.startToEnd,
+                              key: Key(list[index].id.toString()),
+                              onDismissed: (direction) {
+                                BlocProvider.of<HomeBloc>(context)
+                                    .add(OntaskdeleteEvent(list[index]));
+                              },
+                              child: Card(
+                                elevation: 3,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: ListTile(
+                                  title: Text('Task ${list[index].title}',
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  subtitle: const Text(
+                                      'Due Date: August 31, 2023',
+                                      style: TextStyle(color: Colors.grey)),
+                                  trailing: Checkbox(
+                                    value: list[index].completed ==
+                                        1, // Replace with your actual checkbox value
+                                    onChanged: (bool? value) {
+                                      BlocProvider.of<HomeBloc>(context)
+                                          .add(OnCheckboxClicked(list[index]));
+                                    },
+                                  ),
                                 ),
                               ),
                             ),
