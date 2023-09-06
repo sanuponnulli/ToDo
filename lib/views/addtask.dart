@@ -57,6 +57,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               if (widget.task?.id != null) {
                 BlocProvider.of<TaskAditionBloc>(context).add(EditTaskEvent(
                     TaskModel(
+                        completed: widget.task?.completed ?? 0,
                         id: widget.task!.id,
                         title: _titleController.text,
                         description: _descriptionController.text)));
